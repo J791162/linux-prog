@@ -1,0 +1,104 @@
+1. Awk int(n) Function
+
+$ awk 'BEGIN{
+print int(3.534);
+print int(4);
+print int(-5.223);
+print int(-5);
+}'
+3
+4
+-5
+-5
+
+2. Awk log(n) Function
+$ awk 'BEGIN{
+print log(12);
+print log(0);
+print log(1);
+print log(-1);
+}'
+2.48491
+-inf
+0
+nan
+
+3. Awk sqrt(n) Function
+$ awk 'BEGIN{
+print sqrt(16);
+print sqrt(0);
+print sqrt(-12);
+}'
+4
+0
+nan
+
+4. Awk exp(n) Function
+
+$ awk 'BEGIN{
+print exp(123434346);
+print exp(0);
+print exp(-12);
+}'
+inf
+1
+6.14421e-06
+
+
+5. Awk sin(n) Function
+$ awk 'BEGIN {
+print sin(90);
+print sin(45);
+}'
+0.893997
+0.850904
+
+6. Awk cos(n) Function
+$ awk 'BEGIN {
+print cos(90);
+print cos(45);
+}'
+-0.448074
+0.525322
+
+7. Awk atan2(m,n) Function
+$ awk 'BEGIN {
+print atan2(30,45);
+
+}'
+0.588003
+
+
+8. Awk rand() Function
+
+$cat rand.awk
+BEGIN {
+while(i<1000)
+{
+	n = int(rand()*100);
+	rnd[n]++;
+	i++;
+}
+for(i=0;i<=100;i++) {
+	print i,"Occured", rnd[i], "times";
+}
+}
+$
+
+OUTPUT
+
+$awk -f rand.awk
+0 Occured 6 times
+1 Occured 16 times
+2 Occured 12 times
+3 Occured 6 times
+4 Occured 13 times
+5 Occured 13 times
+6 Occured 8 times
+7 Occured 7 times
+8 Occured 16 times
+9 Occured 9 times
+10 Occured 6 times
+11 Occured 9 times
+12 Occured 17 times
+13 Occured 12 times

@@ -1,0 +1,218 @@
+
+1] cat employee.txt
+2] awk '{print;}' employee.txt
+3] awk '/Thomas//nisha/' employee.txt
+4] awk '{print $2,$5;}' employee.txt
+
+5]
+ $ awk 'BEGIN {print "Name\tDesignation\tDepartment\tSalary";}
+> {print $2,"\t",$3,"\t",$4,"\t",$NF;}
+> END{print "Report Generated\n--------------";
+> }' employee.txt
+Name	Designation	Department	Salary
+Thomas 	 Manager 	 Sales 	         $5,000
+Jason 	 Developer 	 Technology 	 $5,500
+Sanjay 	 Sysadmin 	 Technology 	 $7,000
+Nisha 	 Manager 	 Marketing 	 $9,500
+Randy 	 DBA 	 	 Technology 	 $6,000
+Report Generated
+--------------
+
+6]
+ $ awk '$1 >200' employee.txt
+300  Sanjay  Sysadmin   Technology  $7,000
+400  Nisha   Manager    Marketing   $9,500
+500  Randy   DBA        Technology  $6,000
+
+7]
+ $ awk '$4 ~/Technology/' employee.txt
+200  Jason   Developer  Technology  $5,500
+300  Sanjay  Sysadmin   Technology  $7,000
+500  Randy   DBA        Technology  $6,000
+
+8] Awk Example 7. Print number of employees in Technology department
+$ awk 'BEGIN { count=0;}
+$4 ~ /Technology/ { count++; }
+END { print "Number of employees in Technology Dept =",count;}' employee.txt
+Number of employees in Tehcnology Dept = 3
+
+8]
+
+#!/bin/bash
+
+awk ‘ {
+# skip the first two lines
+if (NR == 1 || NR == 2)
+continue
+
+for(i=2; i<=NF; i++)
+printf("%s %s\n", $1, $i)
+} ' datafile.txt
+
+#input file
+NAME JAN FEB MARCH APRIL MAY JUNE JULY
+——- —– —— ———- ——– —— ——- ——
+BEN 5,000 6,000 7,000 8,000 6,500 7,500 9,000
+YONG 4,000 5,500 6,000 5,800 7,000 8,000 8,5000
+
+# output should be as below.
+BEN 5,000
+BEN 6,000
+BEN 7,000
+BEN 8,000
+BEN 6,500
+BEN 7,500
+BEN 9,000
+YONG 4,000
+YONG 5,500
+YONG 6,000
+YONG 5,800
+YONG 7,000
+YONG 8,000
+YONG 8,5000
+
+
+9] 
+ps aux > processes
+awk '{ print }' processes
+
+10]
+# $1 is field #1, $2 is field #2, etc.
+
+echo one two | awk '{print $1}'
+# one
+
+echo one two | awk '{print $2}'
+# two
+
+# But what is field #0 ($0)?
+echo one two | awk '{print $0}'
+# one two
+# All the fields!
+
+
+awk '{print $3}' $filename
+# Prints field #3 of file $filename to stdout.
+
+awk '{print $1 $5 $6}' $filename
+# Prints fields #1, #5, and #6 of file $filename.
+
+awk '{print $0}' $filename
+# Prints the entire file!
+# Same effect as:   cat $filename . . . or . . . sed '' $filename
+
+
+
+10]
+#!/bin/awk -f
+BEGIN {
+
+# Print the squares from 1 to 10 the first way
+
+	i=1;
+	while (i <= 10) {
+		printf "The square of ", i, " is ", i*i;
+		i = i+1;
+	}
+
+# do it again, using more concise code
+
+	for (i=1; i <= 10; i++) {
+		printf "The square of ", i, " is ", i*i;
+	}
+
+# now end
+exit;
+}
+
+
+11]
+
+The following asks for a number, and then squares it:
+
+#!/bin/awk -f
+BEGIN {
+    print "type a number";
+}
+{
+    print "The square of ", $1, " is ", $1*$1;
+    print "type another number";
+}
+END {
+    print "Done"
+}
+
+12]
+
+#!/bin/awk -f
+BEGIN {
+# How many lines
+    lines=0;
+    total=0;
+}
+
+{
+# this code is executed once for each line
+# increase the number of files
+    lines++;
+# increase the total size, which is field #1
+    total+=$1;
+}
+
+END {
+# end, now output the total
+    print lines " lines read";
+    print "total is ", total;
+    if (lines > 0 ) {
+	print "average is ", total/lines;
+    } else {
+	print "average is 0";
+    }
+}
+
+
+12] 
+
+Renaming within the name: 
+ls -1 *old* | awk '{print "mv "$1" "$1}' | sed s/old/new/2 | sh 
+(although in some cases it will fail, as in file_old_and_old)
+remove only files: 
+ls -l * | grep -v drwx | awk '{print "rm "$9}' | sh 
+or with awk alone:
+ls -l|awk '$1!~/^drwx/{print $9}'|xargs rm 
+Be careful when trying this out in your home directory. We remove files!
+remove only directories 
+ls -l | grep '^d' | awk '{print "rm -r "$9}' | sh 
+or
+ls -p | grep /$ | wk '{print "rm -r "$1}' 
+or with awk alone:
+ls -l|awk '$1~/^d.*x/{print $9}'|xargs rm -r 
+Be careful when trying this out in your home directory. We remove things!
+killing processes by name (in this example we kill the process called netscape): 
+kill `ps auxww | grep netscape | egrep -v grep | awk '{print $2}'` 
+or with awk alone:
+ps auxww | awk '$0~/netscape/&&$0!~/awk/{print $2}' |xargs kill 
+It has to be adjusted to fit the ps command on whatever unix system you are on. Basically it is: "If the process is called netscape and it is not called 'grep netscape' (or awk) then print the pid"
+
+
+13]
+
+awk 'BEGIN 
+{
+a=1;b=1; 
+while(++x<=10)
+{
+print a; t=a;a=a+b;b=t
+};
+ exit
+}'
+1
+2
+3
+5
+8
+13
+21
+34
+55
+89

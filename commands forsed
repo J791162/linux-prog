@@ -1,0 +1,2378 @@
+Print one line
+sed -n '10p' myfile.txt
+
+Do replacement on all lines except line 5
+sed '5!/s/foo/bar/' file.txt
+
+Do replacement on lines matching regex (eg: lines starting with 'hello')
+sed '/^hello/ s/h/H/' file.txt
+
+Do replacement from line 5 to end of file
+sed '5,$ s/foo/bar/' file.txt
+
+Delete empty files
+sed '/^$/d' file
+
+Print lines between two regex matches
+sed -nE '/^foo/,/^bar/p' file.txt
+
+Use custom delimiters to make it easy for some strings that contain slashes
+sed 's_/bin/bash_/bin/sh_' file.txt
+
+Custom delimiters for regex address combined with the classical delimiter for substitute command (you could also use there a custom delimiter). Useful for paths.
+sed '\_/bin/bash_s/grep/egrep/' file.txt
+
+or using the same delimiter for clarity sed '\_/bin/bash_s_grep_egrep_' file.txt
+Insert a space between lowercase/Uppercase characters using & (which represents the regex match)
+sed 's/[a-zA-Z]/& /g' file.txt
+
+Keep the first word of every line (where word is defined by alphanumeric chars + underscores for simplicity sake)
+sed -E 's_[a-zA-Z0-9_]+.*_\1_' file.txt
+
+Switch the first two words
+sed -E 's_([a-zA-Z0-9_]*) ([a-zA-Z0-9_]*)_\2 \1_' f1
+
+Remove duplicate words separated by a single space (but not triplicate)
+sed -E 's_([a-zA-Z0-9_]+) \1_\1_ig' f1
+
+Search and replace for pattern, write just the lines with the replacements in a new file
+sed 's_foo_bar_w replaced.txt' file.txt
+
+Multiple replacements
+sed -e 's_foo_bar_' -e 's_hello_HELLO_' file.txt
+
+Multiple replacements by using a sed script
+#!/usr/bin/sed -f
+s/a/A/
+s/foo/BAR/
+s/hello/HELLO/
+Make executable with chmod +x myscript.sed, call with ./myscript.sed myfile.txt
+Multiple commands using the ; operator which in theory concatenates commands (WARNING! It won't work as expected with certain commands such as 'r' or 'w'. Use a sed script instead OR put the command dealing with filenames last). Print line 10 and insert before line 5.
+sed '10p;5i\"INSERTED BEFORE LINE 5" file.txt
+
+Remove comments between lines starting with these two keywords. Empty lines will be put there instead
+sed -E '/start/,/end/ s/#.*//' file.txt
+
+Delete comments starting with # (no empty lines left behind)
+sed -E '/^#/d' f1
+
+Insert an empty line after pattern (after each line containing comment in this case)
+sed '/^#/G' file.txt
+
+View lines minus lines between line starting with pattern and end of file
+sed '/start/,$ d' file.txt
+
+View lines except lines between line starting with pattern and line ending with pattern
+sed -rn '/start/,/end/ !p' file.txt
+
+Print until you encounter pattern then quit
+sed '/start/q' file.txt
+
+Insert contents of file after a certain line
+sed '5 r newfile.txt' file.txt
+
+Append text after lines containing regex (AFTER FOO)
+sed '/foo/a\AFTER FOO' file.txt
+
+Insert text after lines containing regex (BEFORE FOO)
+sed '/foo/i\BEFORE FOO' file.txt
+
+Change line containing regex match
+sed '/foo/c\FOO IS CHANGED' file.txt
+
+Nested sed ranges with inversion. Between lines 1,100 apply actions where the pattern DOESN'T match.
+#!/usr/bin/sed -f
+1,100 {
+	/foo/ !{
+		s_hello_HELLOOOOWORLD_
+		s_yes_YES_
+	}
+}
+
+Use nested addresses with change, insert and append to modify: the line before match, the line with match, the line after match.
+#!/usr/bin/sed -f
+/^#/ {
+i\
+#BEFFORE ORIGINAL COMMENt
+a\
+#AFTER ORIGINAL COMMENT
+c\
+# ORIGINAL COMMENT IS NOW THIS LINE
+}
+
+Insert new line before the first comment, after the first comment put in the contents of file and quit immediately afterwards
+#!/usr/bin/sed -f
+/^#/ {
+i\#BEFORE COMMENT
+r myotherfile.txt
+q
+}
+Transform text
+sed 'y/abc/ABC/' file.txt
+
+Copy all the comments (starting with #) to a new file
+sed -E '/^#/w comments.txt' file.txt
+
+Print every second line (substitute ~3 for third line, etc)
+sed -n '1~2p' file.txt
+
+Edit file in place but also create a backup
+sed -i.bak 's/hello/HELLO/' file.txt
+
+Append two extra lines after regex match
+sed -E '/^#/G G' file.txt
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+
+
+The syntax of sed command replacement is:
+
+$ sed 's/find/replace/' file
+
+ This sed command finds the pattern and replaces with another pattern. When the replace is left empty, the pattern/element found gets deleted.
+
+Let us consider a sample file as below:
+
+$ cat file
+    Linux
+    Solaris
+    Ubuntu
+    Fedora
+    RedHat
+
+1. To remove a specific character, say 'a'
+
+    $ sed 's/a//' file
+    Linux
+    Solris
+    Ubuntu
+    Fedor
+    RedHt
+
+  This will remove the first occurence of 'a' in every line of the file. To remove all occurences of 'a' in every line,
+
+  $ sed 's/a//g' file
+
+2. To remove 1st character in every line:
+
+    $ sed 's/^.//' file
+    inux
+    olaris
+    buntu
+    edora
+    edHat
+
+  .(dot) tries to match a single character. The  ^ tries to match a pattern(any character) in the beginning of the line.   Another way to write the same:
+
+$ sed 's/.//' file
+
+  This tells to replace a character with nothing. Since by default, sed starts from beginning, it replaces only the 1st character since 'g' is not passed.
+
+3. To remove last character of every line :
+
+    $ sed 's/.$//' file
+    Linu
+    Solari
+    Ubunt
+    Fedor
+    RedHa
+
+  The $ tries to match a pattern in the end of the line.
+
+4. To remove the 1st and last character of every line in the same command:
+
+    $ sed 's/.//;s/.$//' file
+    inu
+    olari
+    bunt
+    edor
+    edHa
+
+   Two commands can be given together with a semi-colon separated in between.
+
+5. To remove first character only if it is a specific character:
+
+    $ sed 's/^F//' file
+    Linux
+    Solaris
+    Ubuntu
+    edora
+    RedHat
+
+  This removes the 1st character only if it is 'F'.
+
+6. To remove last character only if it is a specific character:
+
+$ sed 's/x$//' file
+Linu
+Solaris
+Ubuntu
+Fedora
+RedHat
+
+   This removed the last character only if it s 'x'.
+
+7. To remove 1st 3 characters of every line:
+
+    $ sed 's/...//' file
+    ux
+    aris
+    ntu
+    ora
+    Hat
+
+  A single dot(.) removes 1st character, 3 dots remove 1st three characters.
+
+8. To remove 1st n characters of every line:
+
+    $ sed -r 's/.{4}//' file
+    x
+    ris
+    tu
+    ra
+    at
+
+   .{n} -> matches any character n times, and hence the above expression matches 4 characters and deletes it.
+
+9. To remove last n characters of every line:
+
+    $ sed -r 's/.{3}$//' file
+    Li
+    Sola
+    Ubu
+    Fed
+    Red
+
+ 
+10. To remove everything except the 1st n characters in every line:
+
+    $ sed -r 's/(.{3}).*/\1/' file
+    Lin
+    Sol
+    Ubu
+    Fed
+    Red
+
+  .* -> matches any number of characters, and the first 3 characters matched are grouped using parantheses. In the replacement, by having \1 only the group is retained, leaving out the remaining part.
+
+11. To remove everything except the last n characters in a file:
+
+    $ sed -r 's/.*(.{3})/\1/' file
+    nux
+    ris
+    ntu
+    ora
+    Hat
+
+  Same as last example, except that from the end.
+
+12. To remove multiple characters present in a file:
+
+    $ sed 's/[aoe]//g' file
+    Linux
+    Slris
+    Ubuntu
+    Fdr
+    RdHt
+
+   To delete multiple characters, [] is used by specifying the characters to be removed. This will remove all occurences of the characters a, o and e.
+
+13. To remove a pattern  :
+
+    $ sed 's/lari//g' file
+    Linux
+    Sos
+    Ubuntu
+    Fedora
+    RedHat
+
+ Not just a character, even a pattern can be removed. Here, 'lari' got removed from 'Solaris'.
+
+14. To delete only nth occurrence of a character in every line:
+
+    $ sed 's/u//2' file
+    Linux
+    Solaris
+    Ubunt
+    Fedora
+    RedHat
+
+  By default, sed performs an activity only on the 1st occurence. If n is specifed, sed performs only on the nth occurence of the pattern. The 2nd 'u' of 'Ubuntu' got deleted.
+
+15. To delete everything in a line followed by a character:
+
+    $ sed 's/a.*//' file
+    Linux
+    Sol
+    Ubuntu
+    Fedor
+    RedH
+
+
+16. To remove all digits present in every line of a file:
+
+$ sed 's/[0-9]//g' file
+
+  [0-9] stands for all characters between 0 to 9 meaning all digits, and hence all digits get removed.
+
+17. To remove all lower case alphabets present in every line:
+
+    $ sed 's/[a-z]//g' file
+    L
+    S
+    U
+    F
+    RH
+
+  [a-z] represents lower case alphabets range and hence all lower-case characters get removed.
+
+18. To remove everything other than the lower case alphabets:
+
+    $ sed 's/[^a-z]//g' file
+    inux
+    olaris
+    buntu
+    edora
+    edat
+
+   ^ inside square brackets negates the condition. Here, all characters except lower case alphabets get removed.
+
+19. To remove all alpha-numeric characters present in every line:
+
+$ sed 's/[a-zA-Z0-9]//g' file
+
+    All alpha-numeric characters get removed.
+
+20. To remove a character irrespective of the case:
+
+  $ sed 's/[uU]//g' file
+  Linx
+  Solaris
+  bnt
+  Fedora
+  RedHat
+
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+##FILE SPACING:
+
+ # double space a file
+ sed G
+
+ # double space a file which already has blank lines in it. Output file
+ # should contain no more than one blank line between lines of text.
+ sed '/^$/d;G'
+
+ # triple space a file
+ sed 'G;G'
+
+ # undo double-spacing (assumes even-numbered lines are always blank)
+ sed 'n;d'
+
+ # insert a blank line above every line which matches "regex"
+ sed '/regex/{x;p;x;}'
+
+ # insert a blank line below every line which matches "regex"
+ sed '/regex/G'
+
+ # insert a blank line above and below every line which matches "regex"
+ sed '/regex/{x;p;x;G;}'
+
+NUMBERING:
+
+ # number each line of a file (simple left alignment). Using a tab (see
+ # note on '\t' at end of file) instead of space will preserve margins.
+ sed = filename | sed 'N;s/\n/\t/'
+
+ # number each line of a file (number on left, right-aligned)
+ sed = filename | sed 'N; s/^/     /; s/ *\(.\{6,\}\)\n/\1  /'
+
+ # number each line of file, but only print numbers if line is not blank
+ sed '/./=' filename | sed '/./N; s/\n/ /'
+
+ # count lines (emulates "wc -l")
+ sed -n '$='
+
+TEXT CONVERSION AND SUBSTITUTION:
+
+ # IN UNIX ENVIRONMENT: convert DOS newlines (CR/LF) to Unix format.
+ sed 's/.$//'               # assumes that all lines end with CR/LF
+ sed 's/^M$//'              # in bash/tcsh, press Ctrl-V then Ctrl-M
+ sed 's/\x0D$//'            # works on ssed, gsed 3.02.80 or higher
+
+ # IN UNIX ENVIRONMENT: convert Unix newlines (LF) to DOS format.
+ sed "s/$/`echo -e \\\r`/"            # command line under ksh
+ sed 's/$'"/`echo \\\r`/"             # command line under bash
+ sed "s/$/`echo \\\r`/"               # command line under zsh
+ sed 's/$/\r/'                        # gsed 3.02.80 or higher
+
+ # IN DOS ENVIRONMENT: convert Unix newlines (LF) to DOS format.
+ sed "s/$//"                          # method 1
+ sed -n p                             # method 2
+
+ # IN DOS ENVIRONMENT: convert DOS newlines (CR/LF) to Unix format.
+ # Can only be done with UnxUtils sed, version 4.0.7 or higher. The
+ # UnxUtils version can be identified by the custom "--text" switch
+ # which appears when you use the "--help" switch. Otherwise, changing
+ # DOS newlines to Unix newlines cannot be done with sed in a DOS
+ # environment. Use "tr" instead.
+ sed "s/\r//" infile >outfile         # UnxUtils sed v4.0.7 or higher
+ tr -d \r <infile >outfile            # GNU tr version 1.22 or higher
+
+ # delete leading whitespace (spaces, tabs) from front of each line
+ # aligns all text flush left
+ sed 's/^[ \t]*//'                    # see note on '\t' at end of file
+
+ # delete trailing whitespace (spaces, tabs) from end of each line
+ sed 's/[ \t]*$//'                    # see note on '\t' at end of file
+
+ # delete BOTH leading and trailing whitespace from each line
+ sed 's/^[ \t]*//;s/[ \t]*$//'
+
+ # insert 5 blank spaces at beginning of each line (make page offset)
+ sed 's/^/     /'
+
+ # align all text flush right on a 79-column width
+ sed -e :a -e 's/^.\{1,78\}$/ &/;ta'  # set at 78 plus 1 space
+
+ # center all text in the middle of 79-column width. In method 1,
+ # spaces at the beginning of the line are significant, and trailing
+ # spaces are appended at the end of the line. In method 2, spaces at
+ # the beginning of the line are discarded in centering the line, and
+ # no trailing spaces appear at the end of lines.
+ sed  -e :a -e 's/^.\{1,77\}$/ & /;ta'                     # method 1
+ sed  -e :a -e 's/^.\{1,77\}$/ &/;ta' -e 's/\( *\)\1/\1/'  # method 2
+
+ # substitute (find and replace) "foo" with "bar" on each line
+ sed 's/foo/bar/'             # replaces only 1st instance in a line
+ sed 's/foo/bar/4'            # replaces only 4th instance in a line
+ sed 's/foo/bar/g'            # replaces ALL instances in a line
+ sed 's/\(.*\)foo\(.*foo\)/\1bar\2/' # replace the next-to-last case
+ sed 's/\(.*\)foo/\1bar/'            # replace only the last case
+
+ # substitute "foo" with "bar" ONLY for lines which contain "baz"
+ sed '/baz/s/foo/bar/g'
+
+ # substitute "foo" with "bar" EXCEPT for lines which contain "baz"
+ sed '/baz/!s/foo/bar/g'
+
+ # change "scarlet" or "ruby" or "puce" to "red"
+ sed 's/scarlet/red/g;s/ruby/red/g;s/puce/red/g'   # most seds
+ gsed 's/scarlet\|ruby\|puce/red/g'                # GNU sed only
+
+ # reverse order of lines (emulates "tac")
+ # bug/feature in HHsed v1.5 causes blank lines to be deleted
+ sed '1!G;h;$!d'               # method 1
+ sed -n '1!G;h;$p'             # method 2
+
+ # reverse each character on the line (emulates "rev")
+ sed '/\n/!G;s/\(.\)\(.*\n\)/&\2\1/;//D;s/.//'
+
+ # join pairs of lines side-by-side (like "paste")
+ sed '$!N;s/\n/ /'
+
+ # if a line ends with a backslash, append the next line to it
+ sed -e :a -e '/\\$/N; s/\\\n//; ta'
+
+ # if a line begins with an equal sign, append it to the previous line
+ # and replace the "=" with a single space
+ sed -e :a -e '$!N;s/\n=/ /;ta' -e 'P;D'
+
+ # add commas to numeric strings, changing "1234567" to "1,234,567"
+ gsed ':a;s/\B[0-9]\{3\}\>/,&/;ta'                     # GNU sed
+ sed -e :a -e 's/\(.*[0-9]\)\([0-9]\{3\}\)/\1,\2/;ta'  # other seds
+
+ # add commas to numbers with decimal points and minus signs (GNU sed)
+ gsed -r ':a;s/(^|[^0-9.])([0-9]+)([0-9]{3})/\1\2,\3/g;ta'
+
+ # add a blank line every 5 lines (after lines 5, 10, 15, 20, etc.)
+ gsed '0~5G'                  # GNU sed only
+ sed 'n;n;n;n;G;'             # other seds
+
+SELECTIVE PRINTING OF CERTAIN LINES:
+
+ # print first 10 lines of file (emulates behavior of "head")
+ sed 10q
+
+ # print first line of file (emulates "head -1")
+ sed q
+
+ # print the last 10 lines of a file (emulates "tail")
+ sed -e :a -e '$q;N;11,$D;ba'
+
+ # print the last 2 lines of a file (emulates "tail -2")
+ sed '$!N;$!D'
+
+ # print the last line of a file (emulates "tail -1")
+ sed '$!d'                    # method 1
+ sed -n '$p'                  # method 2
+
+ # print the next-to-the-last line of a file
+ sed -e '$!{h;d;}' -e x              # for 1-line files, print blank line
+ sed -e '1{$q;}' -e '$!{h;d;}' -e x  # for 1-line files, print the line
+ sed -e '1{$d;}' -e '$!{h;d;}' -e x  # for 1-line files, print nothing
+
+ # print only lines which match regular expression (emulates "grep")
+ sed -n '/regexp/p'           # method 1
+ sed '/regexp/!d'             # method 2
+
+ # print only lines which do NOT match regexp (emulates "grep -v")
+ sed -n '/regexp/!p'          # method 1, corresponds to above
+ sed '/regexp/d'              # method 2, simpler syntax
+
+ # print the line immediately before a regexp, but not the line
+ # containing the regexp
+ sed -n '/regexp/{g;1!p;};h'
+
+ # print the line immediately after a regexp, but not the line
+ # containing the regexp
+ sed -n '/regexp/{n;p;}'
+
+ # print 1 line of context before and after regexp, with line number
+ # indicating where the regexp occurred (similar to "grep -A1 -B1")
+ sed -n -e '/regexp/{=;x;1!p;g;$!N;p;D;}' -e h
+
+ # grep for AAA and BBB and CCC (in any order)
+ sed '/AAA/!d; /BBB/!d; /CCC/!d'
+
+ # grep for AAA and BBB and CCC (in that order)
+ sed '/AAA.*BBB.*CCC/!d'
+
+ # grep for AAA or BBB or CCC (emulates "egrep")
+ sed -e '/AAA/b' -e '/BBB/b' -e '/CCC/b' -e d    # most seds
+ gsed '/AAA\|BBB\|CCC/!d'                        # GNU sed only
+
+ # print paragraph if it contains AAA (blank lines separate paragraphs)
+ # HHsed v1.5 must insert a 'G;' after 'x;' in the next 3 scripts below
+ sed -e '/./{H;$!d;}' -e 'x;/AAA/!d;'
+
+ # print paragraph if it contains AAA and BBB and CCC (in any order)
+ sed -e '/./{H;$!d;}' -e 'x;/AAA/!d;/BBB/!d;/CCC/!d'
+
+ # print paragraph if it contains AAA or BBB or CCC
+ sed -e '/./{H;$!d;}' -e 'x;/AAA/b' -e '/BBB/b' -e '/CCC/b' -e d
+ gsed '/./{H;$!d;};x;/AAA\|BBB\|CCC/b;d'         # GNU sed only
+
+ # print only lines of 65 characters or longer
+ sed -n '/^.\{65\}/p'
+
+ # print only lines of less than 65 characters
+ sed -n '/^.\{65\}/!p'        # method 1, corresponds to above
+ sed '/^.\{65\}/d'            # method 2, simpler syntax
+
+ # print section of file from regular expression to end of file
+ sed -n '/regexp/,$p'
+
+ # print section of file based on line numbers (lines 8-12, inclusive)
+ sed -n '8,12p'               # method 1
+ sed '8,12!d'                 # method 2
+
+ # print line number 52
+ sed -n '52p'                 # method 1
+ sed '52!d'                   # method 2
+ sed '52q;d'                  # method 3, efficient on large files
+
+ # beginning at line 3, print every 7th line
+ gsed -n '3~7p'               # GNU sed only
+ sed -n '3,${p;n;n;n;n;n;n;}' # other seds
+
+ # print section of file between two regular expressions (inclusive)
+ sed -n '/Iowa/,/Montana/p'             # case sensitive
+
+SELECTIVE DELETION OF CERTAIN LINES:
+
+ # print all of file EXCEPT section between 2 regular expressions
+ sed '/Iowa/,/Montana/d'
+
+ # delete duplicate, consecutive lines from a file (emulates "uniq").
+ # First line in a set of duplicate lines is kept, rest are deleted.
+ sed '$!N; /^\(.*\)\n\1$/!P; D'
+
+ # delete duplicate, nonconsecutive lines from a file. Beware not to
+ # overflow the buffer size of the hold space, or else use GNU sed.
+ sed -n 'G; s/\n/&&/; /^\([ -~]*\n\).*\n\1/d; s/\n//; h; P'
+
+ # delete all lines except duplicate lines (emulates "uniq -d").
+ sed '$!N; s/^\(.*\)\n\1$/\1/; t; D'
+
+ # delete the first 10 lines of a file
+ sed '1,10d'
+
+ # delete the last line of a file
+ sed '$d'
+
+ # delete the last 2 lines of a file
+ sed 'N;$!P;$!D;$d'
+
+ # delete the last 10 lines of a file
+ sed -e :a -e '$d;N;2,10ba' -e 'P;D'   # method 1
+ sed -n -e :a -e '1,10!{P;N;D;};N;ba'  # method 2
+
+ # delete every 8th line
+ gsed '0~8d'                           # GNU sed only
+ sed 'n;n;n;n;n;n;n;d;'                # other seds
+
+ # delete lines matching pattern
+ sed '/pattern/d'
+
+ # delete ALL blank lines from a file (same as "grep '.' ")
+ sed '/^$/d'                           # method 1
+ sed '/./!d'                           # method 2
+
+ # delete all CONSECUTIVE blank lines from file except the first; also
+ # deletes all blank lines from top and end of file (emulates "cat -s")
+ sed '/./,/^$/!d'          # method 1, allows 0 blanks at top, 1 at EOF
+ sed '/^$/N;/\n$/D'        # method 2, allows 1 blank at top, 0 at EOF
+
+ # delete all CONSECUTIVE blank lines from file except the first 2:
+ sed '/^$/N;/\n$/N;//D'
+
+ # delete all leading blank lines at top of file
+ sed '/./,$!d'
+
+ # delete all trailing blank lines at end of file
+ sed -e :a -e '/^\n*$/{$d;N;ba' -e '}'  # works on all seds
+ sed -e :a -e '/^\n*$/N;/\n$/ba'        # ditto, except for gsed 3.02.*
+
+ # delete the last line of each paragraph
+ sed -n '/^$/{p;h;};/./{x;/./p;}'
+
+SPECIAL APPLICATIONS:
+
+ # remove nroff overstrikes (char, backspace) from man pages. The 'echo'
+ # command may need an -e switch if you use Unix System V or bash shell.
+ sed "s/.`echo \\\b`//g"    # double quotes required for Unix environment
+ sed 's/.^H//g'             # in bash/tcsh, press Ctrl-V and then Ctrl-H
+ sed 's/.\x08//g'           # hex expression for sed 1.5, GNU sed, ssed
+
+ # get Usenet/e-mail message header
+ sed '/^$/q'                # deletes everything after first blank line
+
+ # get Usenet/e-mail message body
+ sed '1,/^$/d'              # deletes everything up to first blank line
+
+ # get Subject header, but remove initial "Subject: " portion
+ sed '/^Subject: */!d; s///;q'
+
+ # get return address header
+ sed '/^Reply-To:/q; /^From:/h; /./d;g;q'
+
+ # parse out the address proper. Pulls out the e-mail address by itself
+ # from the 1-line return address header (see preceding script)
+ sed 's/ *(.*)//; s/>.*//; s/.*[:<] *//'
+
+ # add a leading angle bracket and space to each line (quote a message)
+ sed 's/^/> /'
+
+ # delete leading angle bracket & space from each line (unquote a message)
+ sed 's/^> //'
+
+ # remove most HTML tags (accommodates multiple-line tags)
+ sed -e :a -e 's/<[^>]*>//g;/</N;//ba'
+
+ # extract multi-part uuencoded binaries, removing extraneous header
+ # info, so that only the uuencoded portion remains. Files passed to
+ # sed must be passed in the proper order. Version 1 can be entered
+ # from the command line; version 2 can be made into an executable
+ # Unix shell script. (Modified from a script by Rahul Dhesi.)
+ sed '/^end/,/^begin/d' file1 file2 ... fileX | uudecode   # vers. 1
+ sed '/^end/,/^begin/d' "$@" | uudecode                    # vers. 2
+
+ # sort paragraphs of file alphabetically. Paragraphs are separated by blank
+ # lines. GNU sed uses \v for vertical tab, or any unique char will do.
+ sed '/./{H;d;};x;s/\n/={NL}=/g' file | sort | sed '1s/={NL}=//;s/={NL}=/\n/g'
+ gsed '/./{H;d};x;y/\n/\v/' file | sort | sed '1s/\v//;y/\v/\n/'
+
+ # zip up each .TXT file individually, deleting the source file and
+ # setting the name of each .ZIP file to the basename of the .TXT file
+ # (under DOS: the "dir /b" switch returns bare filenames in all caps).
+ echo @echo off >zipup.bat
+ dir /b *.txt | sed "s/^\(.*\)\.TXT/pkzip -mo \1 \1.TXT/" >>zipup.bat
+
+TYPICAL USE: Sed takes one or more editing commands and applies all of
+them, in sequence, to each line of input. After all the commands have
+been applied to the first input line, that line is output and a second
+input line is taken for processing, and the cycle repeats. The
+preceding examples assume that input comes from the standard input
+device (i.e, the console, normally this will be piped input). One or
+more filenames can be appended to the command line if the input does
+not come from stdin. Output is sent to stdout (the screen). Thus:
+
+ cat filename | sed '10q'        # uses piped input
+ sed '10q' filename              # same effect, avoids a useless "cat"
+ sed '10q' filename > newfile    # redirects output to disk
+
+For additional syntax instructions, including the way to apply editing
+commands from a disk file instead of the command line, consult "sed &
+awk, 2nd Edition," by Dale Dougherty and Arnold Robbins (O'Reilly,
+1997; http://www.ora.com), "UNIX Text Processing," by Dale Dougherty
+and Tim O'Reilly (Hayden Books, 1987) or the tutorials by Mike Arst
+distributed in U-SEDIT2.ZIP (many sites). To fully exploit the power
+of sed, one must understand "regular expressions." For this, see
+"Mastering Regular Expressions" by Jeffrey Friedl (O'Reilly, 1997).
+The manual ("man") pages on Unix systems may be helpful (try "man
+sed", "man regexp", or the subsection on regular expressions in "man
+ed"), but man pages are notoriously difficult. They are not written to
+teach sed use or regexps to first-time users, but as a reference text
+for those already acquainted with these tools.
+QUOTING SYNTAX: The preceding examples use single quotes ('...')
+instead of double quotes ("...") to enclose editing commands, since
+sed is typically used on a Unix platform. Single quotes prevent the
+Unix shell from intrepreting the dollar sign ($) and backquotes
+(`...`), which are expanded by the shell if they are enclosed in
+double quotes. Users of the "csh" shell and derivatives will also need
+to quote the exclamation mark (!) with the backslash (i.e., \!) to
+properly run the examples listed above, even within single quotes.
+Versions of sed written for DOS invariably require double quotes
+("...") instead of single quotes to enclose editing commands.
+USE OF '\t' IN SED SCRIPTS: For clarity in documentation, we have used
+the expression '\t' to indicate a tab character (0x09) in the scripts.
+However, most versions of sed do not recognize the '\t' abbreviation,
+so when typing these scripts from the command line, you should press
+the TAB key instead. '\t' is supported as a regular expression
+metacharacter in awk, perl, and HHsed, sedmod, and GNU sed v3.02.80.
+VERSIONS OF SED: Versions of sed do differ, and some slight syntax
+variation is to be expected. In particular, most do not support the
+use of labels (:name) or branch instructions (b,t) within editing
+commands, except at the end of those commands. We have used the syntax
+which will be portable to most users of sed, even though the popular
+GNU versions of sed allow a more succinct syntax. When the reader sees
+a fairly long command such as this:
+   sed -e '/AAA/b' -e '/BBB/b' -e '/CCC/b' -e d
+it is heartening to know that GNU sed will let you reduce it to:
+   sed '/AAA/b;/BBB/b;/CCC/b;d'      # or even
+   sed '/AAA\|BBB\|CCC/b;d'
+In addition, remember that while many versions of sed accept a command
+like "/one/ s/RE1/RE2/", some do NOT allow "/one/! s/RE1/RE2/", which
+contains space before the 's'. Omit the space when typing the command.
+OPTIMIZING FOR SPEED: If execution speed needs to be increased (due to
+large input files or slow processors or hard disks), substitution will
+be executed more quickly if the "find" expression is specified before
+giving the "s/.../.../" instruction. Thus:
+   sed 's/foo/bar/g' filename         # standard replace command
+   sed '/foo/ s/foo/bar/g' filename   # executes more quickly
+   sed '/foo/ s//bar/g' filename      # shorthand sed syntax
+On line selection or deletion in which you only need to output lines
+from the first part of the file, a "quit" command (q) in the script
+will drastically reduce processing time for large files. Thus:
+   sed -n '45,50p' filename           # print line nos. 45-50 of a file
+   sed -n '51q;45,50p' filename       # same, but executes much faster
+If you have any additional scripts to contribute or if you find errors
+in this document, please send e-mail to the compiler. Indicate the
+version of sed you used, the operating system it was compiled for, and
+the nature of the problem. To qualify as a one-liner, the command line
+must be 65 characters or less. Various scripts in this file have been
+written or contributed by:
+ Al Aab                   # founder of "seders" list
+ Edgar Allen              # various
+ Yiorgos Adamopoulos      # various
+ Dale Dougherty           # author of "sed & awk"
+ Carlos Duarte            # author of "do it with sed"
+ Eric Pement              # author of this document
+ Ken Pizzini              # author of GNU sed v3.02
+ S.G. Ravenhall           # great de-html script
+ Greg Ubben               # many contributions & much help
+-------------------------------------------------------------------------
+                                                         
+                                                         
+
+
+accept
+accton
+acpid
+addftinfo
+addpart
+addr2line
+adduser
+agetty
+alias
+alternatives
+amtu
+anacron
+animate
+anvil
+apachectl
+apm
+apmd
+apmsleep
+appletviewer
+aproposaproposaproposaproposaproposaproposaproposaproposaudispd
+apt
+ar
+arbitron
+arch
+arp
+arpingarpingarpingarpingarpingarpingarpingarpingarp
+as
+aspell
+at
+atd
+atq
+atrm
+atrun
+attr
+audispd
+auditctl
+auditd
+aulast
+aulastlog
+aureport
+ausearch
+ausyscall
+authconfig
+autoconf
+autofs
+automountautomountautomountautomountautomountautomountautomountautomountbccmd
+autoreconf
+autoscan
+autoupdate
+autrace
+avcstat
+avctrl
+awk
+  badblocks
+base64
+basename
+bash
+bashbug
+batch
+bcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbcbccrash
+bccmd
+bg
+bind
+bison
+blkid
+blockdev
+bmp2tiff
+booleans
+bounce
+break
+builtin
+builtins
+bunzip2
+bzcat
+bzcmp
+bzdiff
+bzgrep
+bzip2
+bzless
+bzmore
+  c++filt
+cal
+callback
+cancel
+cat
+cd
+chage
+chat
+chattr
+chcat
+chcon
+checkmodule
+checkpolicy
+chfn
+chgrp
+chkconfig
+chmod
+chown
+chpasswd
+chroot
+chrt
+chsh
+chvt
+ciphers
+ciptool
+cjpeg
+cksum
+cleanlinks
+cleanup
+clear
+clockdiff
+clusterdb
+cmp
+col
+colcrt
+colrm
+column
+combinediff
+comm
+command
+compare
+compgen
+compile_et
+complete
+composite
+conjure
+conman
+conmand
+continue
+convert
+convertquota
+cp
+cpan
+cpio
+cpp
+cpuspeed
+crashcrashcrashcrashcrashcrashcrashcrash
+createdb
+createlang
+createuser
+cron
+crond
+crontab
+cryptsetup
+csh
+csplitcsplit
+ctags
+cupsctl
+cupsd
+curl
+cut
+cvs
+cvsbug
+cyradm
+cytune
+  date
+dc
+dd
+deallocvt
+debugfs
+declare
+defer
+deliver
+delpart
+depmod
+df
+dfutool
+dgst
+diff
+diffstat
+dig
+dir
+dircolors
+dirname
+dirs
+discard
+disown
+display
+distcache
+djpeg
+dmesg
+dmidecode
+dmraid
+dmsetup
+dnsdomainname
+dnsmasq
+doexec
+domainname
+dos2unix
+dosfsck
+doxygen
+doxytag
+dprofpp
+dropdb
+droplang
+dropuser
+dsa
+dsaparam
+du
+dump
+dund
+dvipdf
+  ec
+echo
+ecparam
+ed
+editdiff
+edquota
+egrep
+eject
+elinks
+emacs
+enable
+enc
+env
+envsubst
+eqn
+error
+errstr
+esd
+esdcat
+esdctl
+esddsp
+esdfilt
+esdloop
+esdmon
+esdplay
+esdrec
+esdsample
+espdiff
+etags
+ethtool
+eval
+eventlogadm
+ex
+exec
+execstack
+exit
+expand
+export
+exportfs
+expr
+extcheck
+  factor
+faillog
+false
+fancontrol
+fastjar
+fax2ps
+fax2tiff
+fbset
+fc
+fdformat
+fdisk
+fetchmail
+fg
+fgconsole
+fgrep
+file
+filefrag
+filterdiff
+find
+find2perl
+findchip
+findfs
+findsmb
+finger
+fixcvsdiff
+fixfiles
+flipdiff
+flock
+floppy
+flush
+fmt
+fold
+font2c
+fonttosfnt
+formail
+free
+fsadm
+fsck
+ftp
+fud
+funzip
+fuser
+  g++
+gawk
+gcc
+gccmakedep
+gcj
+gcjh
+gcov
+gctags
+gdb
+gdbserver
+gdbtui
+gendiff
+gendsa
+genhomedircon
+genhostid
+genrsa
+geqn
+getenforce
+getent
+getfacl
+getfattr
+getkey
+getkeycodes
+getopt
+getopts
+getsebool
+gettext
+gfdl
+ghostscript
+gif2tiff
+gij
+gindxbib
+gjnih
+glookbib
+gnroff
+gpasswd
+gpg
+gpg.ru
+gpgv
+gpic
+gpm
+gprof
+grefer
+grep
+grepdiff
+grepjar
+grmic
+grmiregistry
+grn
+grodvi
+groff
+groffer
+grohtml
+grolbp
+grolj4
+grops
+grotty
+groupadd
+groupdel
+groupmod
+groups
+grpck
+grpconv
+grpunconv
+grub
+grubby
+gs
+gtroff
+gunzip
+gzexe
+gzip
+  hald
+halt
+hash
+hcid
+hcitool
+hdparm
+head
+help
+hexdump
+history
+host
+hostid
+hostname
+htdbm
+htdigest
+htpasswd
+httpd
+hwclock
+  icclink
+iconv
+id
+identify
+idmapd
+ifconfig
+ifnames
+ifrename
+igawk
+imake
+imapd
+import
+imtest
+indxbib
+info
+infocmp
+infokey
+infotocap
+init
+initdb
+initlog
+innochecksum
+insmod
+install
+installsieve
+instmodsh
+interdiff
+intro
+ionice
+ip
+ip6tables
+ipcalc
+ipcclean
+ipcrm
+ipcs
+iptables-restore
+iptables-save
+iptables
+iptstate
+ipurge
+irattach
+irdadump
+irdaping
+irnetd
+irpsion5
+irqbalance
+isadump
+isaset
+isosize
+  jade
+jarsigner
+java
+javac
+javadoc
+javah
+javap
+javaws
+jconsole
+jdb
+jinfo
+jmap
+jobs
+join
+jpegicc
+jpegtran
+jps
+jsadebugd
+jstack
+jstat
+jstatd
+jwhois
+  kbd_mode
+kbdrate
+keytool
+kill
+killall
+kinit
+klist
+klogd
+kpartx
+ksh
+ktab
+kudzu
+  last
+lastb
+lastcomm
+lastlog
+lchage
+lchfn
+lchsh
+ld
+ldconfig
+ldd
+less
+lessecho
+lesskey
+let
+lftp
+lftpget
+libnetcfg
+lid
+link
+links
+lkbib
+lmtp
+lmtpd
+lmtptest
+ln
+lndir
+lnewusers
+loadkeys
+loadunimap
+local
+locale
+localedef
+locate
+lockd
+lockfile
+logger
+login
+logname
+logout
+logresolve
+logrotate
+logsave
+logwatch
+look
+lookbib
+losetup
+lp
+lpadmin
+lpasswd
+lpc
+lpinfo
+lpmove
+lpoptions
+lppasswd
+lpq-cups
+lpq
+lpr
+lprm
+lpstat
+ls
+lsattr
+lsdiff
+lshal
+lsmod
+lsof
+lspci
+lspcmcia
+lsusb
+ltrace
+lwresd
+  m4
+mac2unix
+mail
+mailq
+make
+makedepend
+makeg
+makestrs
+makewhatis
+man
+man2html
+manpath
+map
+mapscrn
+master
+matchpathcon
+mattrib
+mbadblocks
+mbchk
+mbexamine
+mbpath
+mcat
+mcd
+mclasserase
+mcookie
+mcopy
+md5sum
+mdadm
+mdassemble
+mdeltree
+mdir
+mdmpd
+mdu
+mergelib
+mesg
+mev
+mformat
+mgetty
+minfo
+mingetty
+mkbootdisk
+mkdir
+mkdirhier
+mkdosfs
+mke2fs
+mkfifo
+mkfontdir
+mkfontscale
+mkfs.ext2
+mkfs.ext3
+mkfs
+mkhtmlindex
+mkinitrd
+mklost+found
+mkmanifest
+mkmapfile
+mknod
+mkswap
+mktemp
+mlabel
+mmd
+mmount
+mmove
+modinfo
+modprobe
+mogrify
+montage
+more
+mount
+mountd
+mountpoint
+mpartition
+mrd
+mren
+msgattrib
+msgcat
+msgcmp
+msgcomm
+msgconv
+msgen
+msgexec
+msgfilter
+msgfmt
+msggrep
+msginit
+msgmerge
+msgunfmt
+msguniq
+mshowfat
+msql2mysql
+mtools
+mtoolstest
+mtr
+mtype
+multipath
+multipathd
+mupdatetest
+mutt
+mv
+mysql
+mysqlaccess
+mysqladmin
+mysqlbinlog
+mysqlbug
+mysqlcheck
+mysqld
+mysqld_multi
+mysqld_safe
+mysqldump
+mysqldumpslow
+mysqlhotcopy
+mysqlimport
+mysqlman
+mysqlmanager
+mysqlshow
+mysqlslap
+mysqltest
+mzip
+  named
+namei
+nameif
+nano
+nash
+nc
+neqn
+net
+netplugd
+netreport
+netstat
+newaliases
+newgrp
+newusers
+nfsd
+nfsstat
+ngettext
+nhfsgraph
+nhfsnums
+nhfsrun
+nhfsstone
+nice
+nm
+nmbd
+nmblookup
+nntpd
+nntptest
+nohup
+nologin
+notifyd
+nroff
+nscd
+nseq
+nsgmls
+nslookup
+nsupdate
+ntlm_auth
+ntpd
+ntpdate
+ntpdc
+ntpq
+ntpstat
+ntptime
+ntptrace
+ntsysv
+numactl
+  objcopy
+objdump
+ocsp
+od
+oddjobd
+onsgmls
+openjade
+openssl
+openvt
+oqmgr
+orbd
+osgmlnorm
+ospam
+ospcat
+ospent
+ownership
+  pand
+paps
+parted
+partprobe
+partx
+passwd
+paste
+patch
+pathchk
+pax
+pccardctl
+pcregrep
+pcretest
+pcscd
+pdbedit
+pdf2dsc
+pdf2ps
+pdffonts
+pdfimages
+pdfinfo
+pdfopt
+pdftohtml
+pdftops
+pdftotext
+perror
+pf2afm
+pfbtopfa
+pfbtops
+pftp
+pgawk
+pgrep
+php-config
+php
+phpize
+pic
+pic2graph
+pickup
+piconv
+pidof
+pinfo
+ping
+ping6
+pinky
+pipe
+pkg-config
+pkill
+plipconfig
+pluginviewer
+pman
+pmap
+pod2html
+pod2latex
+pod2man
+pod2text
+pod2usage
+podchecker
+podselect
+policytool
+pop3d
+pop3test
+popd
+portmap
+postalias
+postcat
+postconf
+postdrop
+postfix
+postgres
+postkick
+postlock
+postlog
+postmap
+postmaster
+postqueue
+postsuper
+poweroff
+ppm2tiff
+pppd
+pppdump
+pppoe
+pppstats
+pr
+prelink
+printafm
+printenv
+printf
+procmail
+profiles
+protoize
+prove
+proxymap
+ps
+psed
+psql
+pstack
+pstree
+pstruct
+ptar
+ptardiff
+ptx
+pushd
+pvchange
+pvck
+pvcreate
+pvdisplay
+pvmove
+pvremove
+pvresize
+pvs
+pvscan
+pwck
+pwconv
+pwd
+pwdx
+pwmconfig
+pwunconv
+python
+  qmgr
+qmqpd
+qshape
+quota
+quotacheck
+quotaon
+quotastats
+  racoon
+racoonctl
+ramsize
+ranlib
+ras2tiff
+raw
+raw2tiff
+rawdevices
+rcp
+rdate
+rdev
+rdisc
+rdist
+rdjpgcom
+rdump
+read
+readelf
+readlink
+readonly
+readprofile
+reboot
+reconstruct
+recountdiff
+red
+rediff
+refer
+reindexdb
+reject
+rename
+renice
+replace
+repquota
+req
+reset
+resize2fs
+resizecons
+resolveip
+restore
+restorecon
+restorecond
+return
+rev
+revpath
+rexec
+rfcomm
+rgb2ycbcr
+rlogin
+rm
+rmdir
+rmid
+rmmod
+rmnews
+rmt
+rnano
+rootflags
+rotatelogs
+route
+rpcclient
+rpcdebug
+rpcgen
+rpcinfo
+rsa
+rsautl
+rsh
+rsvg
+rsync
+ruby
+runcon
+runlevel
+runuser
+rvi
+rview
+rvim
+  safe_mysqld
+saslauthd
+scache
+scp
+script
+sdiff
+sdpd
+sdptool
+sechecker
+secon
+sed
+sediff
+seinfo
+selinux
+selinuxenabled
+semanage
+sensors
+seq
+serialver
+servertool
+service
+sesearch
+sestatus
+set
+setarch
+setenforce
+setfacl
+setfattr
+setfiles
+setfont
+setkey
+setkeycodes
+setleds
+setmetamode
+setpci
+setquota
+setsebool
+setserial
+setsid
+setterm
+sfdisk
+sftp
+sg
+sgpio
+sh
+sha
+shift
+shopt
+showkey
+showmount
+showq
+shred
+shutdown
+sieveshell
+sivtest
+size
+skill
+slabtop
+slattach
+sleep
+sln
+slogin
+smartctl
+smartd
+smbcacls
+smbclient
+smbcontrol
+smbcquotas
+smbd
+smbget
+smbpasswd
+smbspool
+smbstatus
+smbtar
+smbtree
+smime
+smmapd
+smtp
+smtpd
+smtptest
+snice
+snmpd
+snmptrapd
+sntp
+soelim
+sort
+sosreport
+source
+spam
+spamassassin
+spamc
+spamd
+spawn
+speed
+spent
+spkac
+splain
+split
+splitdiff
+sprof
+sqlite3
+squatter
+ssh-add
+ssh-agent
+ssh-copy-id
+ssh-keygen
+ssh-keyscan
+ssh-keysign
+ssh
+sshd
+sslpasswd
+sslrand
+sslswamp
+stat
+statd
+strace
+strings
+strip
+stty
+stunnel
+su
+sudo
+sudoedit
+suexec
+sulogin
+sum
+suspend
+svcgssd
+swapoff
+swapon
+symlinks
+sync
+sysctl
+sysklogd
+syslogd
+systool
+  tac
+tack
+tail
+tailf
+talk
+tar
+taskset
+tbl
+tclsh
+tcpd
+tcpdump
+tcpslice
+tcsh
+tdbbackup
+tdbdump
+tdbtool
+tee
+telinit
+telnet
+test
+testparm
+tfmtodit
+tftp
+thumbnail
+tic
+tiff2bw
+tiff2pdf
+tiff2ps
+tiff2rgba
+tiffcmp
+tiffcp
+tiffdither
+tiffdump
+tifficc
+tiffinfo
+tiffmedian
+tiffset
+tiffsplit
+time
+times
+timsieved
+tload
+tls_prune
+tlsmgr
+tmpwatch
+tnameserv
+toe
+top
+touch
+tput
+tr
+trace
+tracepath
+traceroute
+trap
+tree
+troff
+TRUE
+tset
+tsort
+tty
+tune2fs
+tunelp
+type
+typeset
+tzselect
+  ucs2any
+udevcontrol
+udevd
+udevinfo
+udevmonitor
+udevsettle
+udevtest
+udevtrigger
+ul
+ulimit
+umap
+umask
+umount
+unalias
+uname
+unexpand
+unexpunge
+uniq
+unix2dos
+unlink
+unprotoize
+unset
+unwrapdiff
+unzip
+unzipsfx
+updatedb
+uptime
+urlview
+useradd
+userdel
+userhelper
+userinfo
+usermod
+usermount
+usernetctl
+userpasswd
+users
+usleep
+uuidgen
+  vacuumdb
+vbetool
+vconfig
+vdir
+verify
+version
+vfstest
+vi
+vidmode
+view
+vigr
+vim
+vimdiff
+vimtutor
+vipw
+virtual
+visudo
+vmstat
+vol_id
+volname
+vpddecode
+vsftpd
+  w
+wait
+wall
+warnquota
+watch
+wbinfo
+wc
+webalizer
+wftopfa
+wget
+whatis
+whereis
+which
+whiptail
+who
+whoami
+whois
+winbindd
+wish
+write
+wrjpgcom
+wtpt
+  xargs
+xfs
+xgettext
+xglyph
+xmkmf
+xmlcatalog
+xmllint
+xmlwf
+xqmstats
+xsltproc
+xsubpp
+xulrunner
+xxd
+  yes
+ypbind
+ypcat
+ypchfn
+ypchsh
+ypmatch
+yppasswd
+yppoll
+ypset
+yptest
+ypwhich
+yum
+  zcat
+zcmp
+zdiff
+zdump
+zforce
+zgrep
+zic
+zip
+zipgrep
+zipinfo
+zless
+zmore
+znew
+zsoelim
+
+
+
+
+
+
+
+https://gofile.io/d/e0w4M8
+    
+    
+    
+    
+    
+    
+
+
+Sed Command Examples
+
+file.txt
+unix is great os. unix is opensource. unix is free os.
+learn operating system.
+unixlinux which one you choose.
+
+
+1. Replacing or substituting string
+
+Sed command is mostly used to replace the text in a file. The below simple sed command replaces the word "unix" with "linux" in the file.
+
+>sed 's/unix/linux/' file.txt
+
+Here the "s" specifies the substitution operation. The "/" are delimiters. The "unix" is the search pattern and the "linux" is the replacement string.
+
+By default, the sed command replaces the first occurrence of the pattern in each line and it won't replace the second, third...occurrence in the line.
+
+2. Replacing the nth occurrence of a pattern in a line.
+
+Use the /1, /2 etc flags to replace the first, second occurrence of a pattern in a line. The below command replaces the second occurrence of the word "unix" with "linux" in a line.
+
+>sed 's/unix/linux/2' file.txt
+
+3. Replacing all the occurrence of the pattern in a line.
+
+The substitute flag /g (global replacement) specifies the sed command to replace all the occurrences of the string in the line.
+
+>sed 's/unix/linux/g' file.txt
+
+4. Replacing from nth occurrence to all occurrences in a line.
+
+Use the combination of /1, /2 etc and /g to replace all the patterns from the nth occurrence of a pattern in a line. The following sed command replaces the third, fourth, fifth... "unix" word with "linux" word in a line.
+
+>sed 's/unix/linux/3g' file.txt
+
+5. Changing the slash (/) delimiter
+
+You can use any delimiter other than the slash. As an example if you want to change the web url to another url as
+
+>sed 's/http:\/\//www/' file.txt
+
+In this case the url consists the delimiter character which we used. In that case you have to escape the slash with backslash character, otherwise the substitution won't work.
+
+Using too many backslashes makes the sed command look awkward. In this case we can change the delimiter to another character as shown in the below example.
+
+>sed 's_http://_www_' file.txt
+>sed 's|http://|www|' file.txt
+
+6. Using & as the matched string
+
+There might be cases where you want to search for the pattern and replace that pattern by adding some extra characters to it. In such cases & comes in handy. The & represents the matched string.
+
+>sed 's/unix/{&}/' file.txt
+{unix} is great os. unix is opensource. unix is free os.
+learn operating system.
+{unix}linux which one you choose.
+
+>sed 's/unix/{&&}/' file.txt
+
+7. Using \1,\2 and so on to \9
+
+The first pair of parenthesis specified in the pattern represents the \1, the second represents the \2 and so on. The \1,\2 can be used in the replacement string to make changes to the source string. As an example, if you want to replace the word "unix" in a line with twice as the word like "unixunix" use the sed command as below.
+
+>sed 's/\(unix\)/\1\1/' file.txt
+
+The parenthesis needs to be escaped with the backslash character. Another example is if you want to switch the words "unixlinux" as "linuxunix", the sed command is
+
+>sed 's/\(unix\)\(linux\)/\2\1/' file.txt
+
+Another example is switching the first three characters in a line
+
+>sed 's/^\(.\)\(.\)\(.\)/\3\2\1/' file.txt
+
+8. Duplicating the replaced line with /p flag
+
+The /p print flag prints the replaced line twice on the terminal. If a line does not have the search pattern and is not replaced, then the /p prints that line only once.
+
+>sed 's/unix/linux/p' file.txt
+
+9. Printing only the replaced lines
+
+Use the -n option along with the /p print flag to display only the replaced lines. Here the -n option suppresses the duplicate rows generated by the /p flag and prints the replaced lines only one time.
+
+>sed -n 's/unix/linux/p' file.txt
+
+If you use -n alone without /p, then the sed does not print anything.
+
+10. Running multiple sed commands.
+
+You can run multiple sed commands by piping the output of one sed command as input to another sed command.
+
+>sed 's/unix/linux/' file.txt| sed 's/os/system/'
+
+Sed provides -e option to run multiple sed commands in a single sed command. The above output can be achieved in a single sed command as shown below.
+
+>sed -e 's/unix/linux/' -e 's/os/system/' file.txt
+
+11. Replacing string on a specific line number.
+
+You can restrict the sed command to replace the string on a specific line number. An example is
+
+>sed '3 s/unix/linux/' file.txt
+
+The above sed command replaces the string only on the third line.
+
+12. Replacing string on a range of lines.
+
+You can specify a range of line numbers to the sed command for replacing a string.
+
+>sed '1,3 s/unix/linux/' file.txt
+
+Here the sed command replaces the lines with range from 1 to 3. Another example is
+
+>sed '2,$ s/unix/linux/' file.txt
+
+Here $ indicates the last line in the file. So the sed command replaces the text from second line to last line in the file.
+
+13. Replace on a lines which matches a pattern.
+
+You can specify a pattern to the sed command to match in a line. If the pattern match occurs, then only the sed command looks for the string to be replaced and if it finds, then the sed command replaces the string.
+
+>sed '/linux/ s/unix/centos/' file.txt
+
+Here the sed command first looks for the lines which has the pattern "linux" and then replaces the word "unix" with "centos".
+
+14. Deleting lines.
+
+You can delete the lines a file by specifying the line number or a range or numbers.
+
+>sed '2 d' file.txt
+>sed '5,$ d' file.txt
+
+15. Duplicating lines
+
+You can make the sed command to print each line of a file two times.
+
+>sed 'p' file.txt
+
+16. Sed as grep command
+
+You can make sed command to work as similar to grep command.
+
+>grep 'unix' file.txt
+>sed -n '/unix/ p' file.txt
+
+Here the sed command looks for the pattern "unix" in each line of a file and prints those lines that has the pattern.
+
+You can also make the sed command to work as grep -v, just by using the reversing the sed with NOT (!).
+
+>grep -v 'unix' file.txt
+>sed -n '/unix/ !p' file.txt
+
+The ! here inverts the pattern match.
+
+17. Add a line after a match.
+
+The sed command can add a new line after a pattern match is found. The "a" command to sed tells it to add a new line after a match is found.
+
+>sed '/unix/ a "Add a new line"' file.txt
+unix is great os. unix is opensource. unix is free os.
+"Add a new line"
+learn operating system.
+unixlinux which one you choose.
+"Add a new line"
+
+18. Add a line before a match
+
+The sed command can add a new line before a pattern match is found. The "i" command to sed tells it to add a new line before a match is found.
+
+>sed '/unix/ i "Add a new line"' file.txt
+"Add a new line"
+unix is great os. unix is opensource. unix is free os.
+learn operating system.
+"Add a new line"
+unixlinux which one you choose.
+
+19. Change a line
+
+The sed command can be used to replace an entire line with a new line. The "c" command to sed tells it to change the line.
+
+>sed '/unix/ c "Change line"' file.txt
+"Change line"
+learn operating system.
+"Change line"
+
+20. Transform like tr command
+
+The sed command can be used to convert the lower case letters to upper case letters by using the transform "y" option.
+
+>sed 'y/ul/UL/' file.txt
+Unix is great os. Unix is opensoUrce. Unix is free os.
+Learn operating system.
+UnixLinUx which one yoU choose.
+
+Here the sed command transforms the alphabets "ul" into their uppercase format "UL"
+
+
+
+
+
+CREATE A FILE
+
+cat textfile.txt
+This is line 1
+This is line 2
+This is line 3
+This is line 4
+This is line 5
+ Deleting lines in a file using sed command
+
+1.1. Deleting the first line in the input file
+bash-3.00#sed '1d' textfile.txt
+
+This is line 2
+This is line 3
+This is line 4
+This is line 5
+
+1.2 Deleting the last line in the input file
+bash-3.00# sed '$d' textfile.txt
+
+This is line 1
+This is line 2
+This is line 3
+This is line 4
+
+1.3 Deleting arbitary lines in the input file
+To delete the lines 2 through 4 in the above file, use the following sed command
+
+bash-3.00# sed '2,4d' textfile.txt
+
+This is line 1
+This is line 5
+
+the 'd' flag is used to delete lines, though the single quote is not mandatory in the above commands (you can simply use sed 1d textfile.txt to delete the first line in the input file), its advisable to use it as a good practice and will be useful when you use the -e option at times to execute a series of sed commands inline.
+
+2. Replace or substitute all occurrences of a pattern using sed command
+In the above text file, if you need to replace all occurrences of the pattern "line" with the text "line number", the following sed command can be used (the 's' flag in the sed command is used to substitute text which matches a pattern).
+
+
+bash-3.00# sed 's/line/line number/g' textfile.txt        
+
+This is line number 1
+This is line number 2
+This is line number 3
+This is line number 4
+This is line number 5
+
+Note: The /g flag in the above command is used to instruct sed to substitute globally i.e all occurrences of the input pattern in the line will be replaced and as a result all words matching the pattern in the input file will be substituted by the other, without /gonly the first word matching the pattern in a line will be replaced.
+
+3. Delete all occurrences of a pattern in a file using sed command
+This is a simple application of the /s flag where the target string is none.
+for example, to remove all occurrences of word "line" in the above file, the sed command 
+would be
+
+bash-3.00# sed 's/line//' textfile.txt
+
+This is  1
+This is  2
+This is  3
+This is  4
+This is  5
+
+Note that the word to be replaced upon matching the pattern is none in the above command ('/s/line//')
+
+To remove all occurrences of the character space in the above input file, the sed command would be
+
+bash-3.00# sed 's/ //g' textfile.txt
+
+Thisisline1
+Thisisline2
+Thisisline3
+Thisisline4
+Thisisline5
+Also note that if you don't use single quotes in the above sed command, then the space pattern should be enclosed in quotes for the command to work.
+
+bash-3.00# sed s/' '//g textfile.txt
+
+Thisisline1
+Thisisline2
+Thisisline3
+Thisisline4
+Thisisline5
+
+4. Deleting lines which matches a pattern using sed command
+
+To delete lines which matches a pattern, use the /d flag along with the pattern to be 
+matched, for example, to delete lines matching the pattern "line 1" in the above file, the 
+command would be
+
+bash-3.00# sed '/line 1/d' textfile.txt
+
+This is line 2
+This is line 3
+This is line 4
+This is line 5
+Now using the above commands, one can also delete the first and last line in a file which 
+matches a pattern.
+
+
+5. Deleting the first line which matches a pattern using sed command
+
+bash-3.00# sed '/line/{1d;}' textfile.txt
+
+This is line 2
+This is line 3
+This is line 4
+This is line 5
+
+In the above command, '1d' is used in braces to indicate that its a command (to delete the specific line, which matches a pattern), this is the way to separate sed flags in command/scripts.
+
+
+6. Deleting the last line which matches a pattern using sed command
+
+
+bash-3.00# sed '/line/{$d;}' textfile.txt
+
+This is line 1
+This is line 2
+This is line 3
+This is line 4
+
+Hope you got to know some common sed command functionality, the next time if you think about sed instead of grep/sed pipe for text processing, you have improved a level in UNIX shell scripting.
+
+
+$ cat  numbers
+1234
+12121
+3434
+123
+
+$sed 's/\(^\|[^0-9.]\)\([0-9]\+\)\([0-9]\{3\}\)/\1\2,\3/g' numbers
+1,234
+12,121
+3,434
+123
+
+$ echo "Welcome To The Geek Stuff" | sed 's/\(\b[A-Z]\)/\(\1\)/g'
+(W)elcome (T)o (T)he (G)eek (S)tuff
+
+

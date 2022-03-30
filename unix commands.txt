@@ -1,0 +1,222 @@
+[root@localhost ~]#
+[root@localhost ~]# greap sbm
+-bash: greap: command not found
+[root@localhost ~]# greap shital.c
+-bash: greap: command not found
+[root@localhost ~]# man grep
+[root@localhost ~]#
+[root@localhost ~]# man ls
+Formatting page, please wait...
+[root@localhost ~]#
+[root@localhost ~]# vi firs
+[root@localhost ~]# cat firs
+111 222 33
+aa bbb ccc ddd
+111 fff 111 ggg
+aaa 666 ddd 66
+aaa 333 111 555 111
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+
+[root@localhost ~]# sed 3q firs
+111 222 33
+aa bbb ccc ddd
+111 fff 111 ggg
+[root@localhost ~]# sed 2p firs
+111 222 33
+aa bbb ccc ddd
+aa bbb ccc ddd
+111 fff 111 ggg
+aaa 666 ddd 66
+aaa 333 111 555 111
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+
+[root@localhost ~]# sed -n 2p firs
+aa bbb ccc ddd
+[root@localhost ~]# sed -n -e 2p -e 6p -e '$p' firs
+aa bbb ccc ddd
+111 222 33
+
+[root@localhost ~]# cat > pat
+2p
+6p
+$p
+[root@localhost ~]# sed -n -f pat firs
+aa bbb ccc ddd
+111 222 33
+
+[root@localhost ~]# sed 's/111/xxx/p' firs
+xxx 222 33
+xxx 222 33
+aa bbb ccc ddd
+xxx fff 111 ggg
+xxx fff 111 ggg
+aaa 666 ddd 66
+aaa 333 xxx 555 111
+aaa 333 xxx 555 111
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+
+[root@localhost ~]# sed -n 's/111/xxx/p' firs
+xxx 222 33
+xxx fff 111 ggg
+aaa 333 xxx 555 111
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+[root@localhost ~]# sed -n 's/111/xxx/p' firs  > pt
+[root@localhost ~]# cat pt
+xxx 222 33
+xxx fff 111 ggg
+aaa 333 xxx 555 111
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+[root@localhost ~]# sed -n 's/111/xxx/gp' firs
+xxx 222 33
+xxx fff xxx ggg
+aaa 333 xxx 555 xxx
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+xxx 222 33
+[root@localhost ~]# sed -n '1,4s/111/xxx/gp' firs
+xxx 222 33
+xxx fff xxx ggg
+[root@localhost ~]# sed 1d firs
+aa bbb ccc ddd
+111 fff 111 ggg
+aaa 666 ddd 66
+aaa 333 111 555 111
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+111 222 33
+
+[root@localhost ~]# sed '/111/d' firs
+aa bbb ccc ddd
+aaa 666 ddd 66
+
+[root@localhost ~]# ls -l
+total 2520
+-rw-------  1 root root    1245 Aug 18 15:46 anaconda-ks.cfg
+drwxr-xr-x  4 root root    4096 Oct 20 11:15 Desktop
+-rw-r--r--  1 root root     200 Nov  9 15:42 firs
+-rw-r--r--  1 root root   30562 Aug 18 15:46 install.log
+-rw-r--r--  1 root root    3510 Aug 18 15:46 install.log.syslog
+-rw-r--r--  1 root root       9 Nov  9 15:44 pat
+-rw-r--r--  1 root root     168 Nov  9 15:45 pt
+drwxr-xr-x  3 root root    4096 Nov  9 15:27 shital
+-rw-r--r--  1 root root      60 Oct 13 16:20 shital.c
+-rw-r--r--  1 root root    3435 Nov  9 15:29 shital.txt
+drwxrwxrwx 15 1020 1020    4096 Sep 27 20:27 squid-3.0.STABLE20
+-rw-r--r--  1 root root 2452224 Sep 27 20:22 squid-3.0.STABLE20.tar.gz
+[root@localhost ~]# ls -l | awk '{ print $9 " " $5 }'
+
+anaconda-ks.cfg 1245
+Desktop 4096
+firs 200
+install.log 30562
+install.log.syslog 3510
+pat 9
+pt 168
+shital 4096
+shital.c 60
+shital.txt 3435
+squid-3.0.STABLE20 4096
+squid-3.0.STABLE20.tar.gz 2452224
+[root@localhost ~]# ls -l | awk '{ print $9 "=>    " $5 }'
+=>
+anaconda-ks.cfg=>    1245
+Desktop=>    4096
+firs=>    200
+install.log=>    30562
+install.log.syslog=>    3510
+pat=>    9
+pt=>    168
+shital=>    4096
+shital.c=>    60
+shital.txt=>    3435
+squid-3.0.STABLE20=>    4096
+squid-3.0.STABLE20.tar.gz=>    2452224
+[root@localhost ~]# vi first.awk
+[root@localhost ~]# awk -f first.awk firs
+Hello
+1 111 222
+2 aa bbb
+3 111 fff
+4 aaa 666
+5 aaa 333
+6 111 222
+7 111 222
+8 111 222
+9 111 222
+10 111 222
+11 111 222
+12 111 222
+13 111 222
+14 111 222
+15 111 222
+16
+END [root@localhost Happy BirthDay Happy BirthDay Happy BirthDay Happy BirthDay Happy BirthDay Happy BirthDay Happy BirthDay Happy BirthDay awk -f first.awk firs

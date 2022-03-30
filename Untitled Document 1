@@ -1,0 +1,1069 @@
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '$5>50000 {print $5,$1}' records.txt
+56767 Anish
+56356 paresh
+50605 Vinay
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat records.txt
+Anish Patil	4044	12/2/2000	56767
+paresh Mishra	5050	33/2/2000	56356
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print $NF}' records.txt
+56767
+56356
+46774
+50605
+40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print $NR}' records.txt
+Anish
+Mishra
+2012
+12/2/2000
+40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'NR==3,NR==6 {print NR,$0}' records.txt
+3 Anand Mathur	2012	23/2/2000	46774
+4 Vinay Singh	2015	12/2/2000	50605
+5 Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ 
+
+    
+    
+    
+    
+    
+    
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '$5>50000 {print $5,$1}' records.txt
+56767 Anish
+56356 paresh
+50605 Vinay
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat records.txt
+Anish Patil	4044	12/2/2000	56767
+paresh Mishra	5050	33/2/2000	56356
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print $NF}' records.txt
+56767
+56356
+46774
+50605
+40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print $NR}' records.txt
+Anish
+Mishra
+2012
+12/2/2000
+40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'NR==3,NR==6 {print NR,$0}' records.txt
+3 Anand Mathur	2012	23/2/2000	46774
+4 Vinay Singh	2015	12/2/2000	50605
+5 Kranti Bhujbal	1010	12/2/2000	
+
+
+
+
+
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print $1}' records.txt
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat records.txt
+Anish Patil	4044	12/2/2000	56767
+paresh Mishra	5050	33/2/2000	56356
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print $1,$2}' records.txt
+Kranti Bhujbal	1010	12/2/2000	40404 
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print}' records.txt
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print $4}' records.txt
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print $3}' records.txt
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print $2}' records.txt
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print $1}' records.txt
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F '/Kranti/{print $1}' records.txt
+awk: 1: unexpected character '.'
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -f '/Kranti/{print $1}' records.txt
+awk: cannot open /Kranti/{print $1} (No such file or directory)
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F  '/Kranti/{print $1}' records.txt
+awk: 1: unexpected character '.'
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ 
+
+
+
+
+
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print $1}' records.txt
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)>5' {print $1}' records.txt
+> ^C
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)>5 {print $1}' records.txt
+paresh
+Kranti
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat records.txt
+Anish Patil	4044	12/2/2000	56767
+paresh Mishra	5050	33/2/2000	56356
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)>5' records.txt
+paresh Mishra	5050	33/2/2000	56356
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)==5' records.txt
+Anish Patil	4044	12/2/2000	56767
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)==5||length($2)==5' records.txt
+Anish Patil	4044	12/2/2000	56767
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)==5||length($2)==7' records.txt
+Anish Patil	4044	12/2/2000	56767
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)>=5 {print $1,"has",length($1)."chars"' records.txt
+awk: 1: unexpected character '.'
+awk: line 1: runaway string constant " ...
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)>=5 {print $1,"has",length($1),"chars"' records.txt
+awk: line 2: missing } near end of file
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)>=5 {print $1,"has",length($1),"chars"}' records.txt
+Anish has 5 chars
+paresh has 6 chars
+Anand has 5 chars
+Vinay has 5 chars
+Kranti has 6 chars
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat records.txt
+Anish Patil	4044	12/2/2000	56767
+paresh Mishra	5050	33/2/2000	56356
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+Kranti Bhujbal	1010	12/2/2000	40404
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print $5}' records.txt
+56767
+56356
+46774
+50605
+40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print $5>50000}' records.txt
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '$5>50000 {print $5}' records.txt
+56767
+56356
+50605
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '$5>50000 {print $5 $1}' records.txt
+56767Anish
+56356paresh
+50605Vinay
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '$5>50000 {print $5,$1}' records.txt
+56767 Anish
+56356 paresh
+50605 Vinay
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ 
+
+
+    
+    
+
+
+
+SYSTEM VARIABLES FOR AWK
+
+
+NR : - Number of currecct record
+FS : - Field Separator (defailt whitespace)
+RS : - Record separator default is \n
+NF :-  Number of Field in currecnt record
+OFS :- Output Field separator (defalt is space)
+ORS :- Output record separator (default is \n)
+    
+
+
+
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat records.txt 
+Anish Patil	4044	12/2/2000	56767
+paresh Mishra	5050	33/2/2000	56356
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ aws '{print NR,$0}' records.txt
+
+Command 'aws' not found, but can be installed with:
+
+sudo apt install awscli
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print NR,$0}' records.txt
+1 Anish Patil	4044	12/2/2000	56767
+2 paresh Mishra	5050	33/2/2000	56356
+3 Anand Mathur	2012	23/2/2000	46774
+4 Vinay Singh	2015	12/2/2000	50605
+5 Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print NR,$1}' records.txt
+1 Anish
+2 paresh
+3 Anand
+4 Vinay
+5 Kranti
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print NR,$1}' records.txt > newdata.txt
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat newdata.txt
+1 Anish
+2 paresh
+3 Anand
+4 Vinay
+5 Kranti
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print NR,$1,$2}' records.txt
+1 Anish Patil
+2 paresh Mishra
+3 Anand Mathur
+4 Vinay Singh
+5 Kranti Bhujbal
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print NR,$1,$2,$5}' records.txt
+1 Anish Patil 56767
+2 paresh Mishra 56356
+3 Anand Mathur 46774
+4 Vinay Singh 50605
+5 Kranti Bhujbal 40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ 
+    
+    
+    
+
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '/mumbai/' data.txt
+avinash is going to mumbai
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '/10/' data.txt
+vishal is 10 year old
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '/record/' data.txt
+this is first line for the record 
+this is another line for new record
+
+---------------------------------------------------------------------------
+
+
+awk 'BEGIN {for (i=1;i<=5;i++) print "Square of ",i,"is"i*i;}'
+
+
+awk '{
+function mysort(arr){
+	n=length(arr);
+	for(i=0;i<n;i++){
+		for(j=0;j<n-1-i;j++){
+			if(arr[j]<arr[j+1]){
+				tmp=arr[j];
+				arr[j]=arr[j+1];
+				arr[j+1]=tmp;
+			}
+		}	
+	}
+}
+
+
+
+
+
+function mysort(arr){
+n=length(arr);
+for(i=0;i<n;i++){
+for(j=0;j<n-1-i;j++){
+if(arr[j]<arr[j+1]){
+tmp=arr[j]
+arr[j]=arr[j+1];
+arr[j+1]=tmp;
+}
+}
+}
+}
+BEGIN { 
+array[0]=10
+array[1]=234
+array[2]=34
+array[3]=456
+array[4]=2342
+
+mysort(array);
+for(i=0;i<length(array);i++){
+print array[i];
+}
+}'
+
+
+
+
+
+
+
+
+student["101,Anand mathur"]=70;
+> student["102,manish patil"]=43;
+> student["103,kranti ajuja"]=54;
+> print "(ID,name)=>Marks";
+> }
+> END{for(i in student) print "(",i,")=>",student[i];}'
+(ID,name)=>Marks
+( 103,kranti ajuja )=> 54
+( 102,manish patil )=> 43
+( 101,Anand mathur )=> 70
+
+
+
+
+
+
+
+
+
+cho|awk 'BEGIN{book["html"]="HTML BOOK";book["JS"]="JavascriptBook";book["C"]="C Programming";}
+END {for (i in book) print "The book of ",i,"is",book[i];}'
+
+
+The book of  JS is JavascriptBook
+The book of  html is HTML BOOK
+The book of  C is C Programming
+
+
+
+
+
+
+178  sudo etc/passwd
+  179  sudo /etc/passwd
+  180  sudo etc/passwd
+  181  cat employee.txt
+  182  cd Desktop/
+  183  cd AWKDemos/
+  184  cat employee.txt
+  185  cat employees.txt 
+  186  awk 'BEGIN {print "Name\tDesignation\tDepartment\tSalary"} {print $1,"\t",$2,"\t",$3,"\t",NF;} END{print "END"}'
+  187  awk 'BEGIN {print "Name\tDesignation\tDepartment\tSalary"} {print $1,"\t",$2,"\t",$3,"\t",NF;} END{print "END"}' employees.txt
+  188  awk 'BEGIN{total=0;} {itemno=$1;book=$2;bookamount=$3*$4;total=total+bookamount;print itemno," ","book","\t","$"bookamount;} END{print "Total amount "total;}'
+  189  awk 'BEGIN{total=0;} {itemno=$1;book=$2;bookamount=$3*$4;total=total+bookamount;print itemno," ","book","\t","$"bookamount;} END{print "Total amount "total;}' Books.txt
+  190  cat Books.txt
+  191  awk 'BEGIN{total=0;} {itemno=$1;book=$2;bookamount=$3*$4;total=total+bookamount;print itemno," ",book,"\t","$"bookamount;} END{print "Total amount "total;}' Books.txt
+  192  cat Books.txt|awk'{sum+=$3} END{print "Total Books"sum}'
+  193  cat Books.txt | awk'{sum+=$3} END{print "Total Books"sum}'
+  194  awk'{sum+=$3} END{print "Total Books"sum}' Books.txt
+  195  awk'BEGIN{sum=0} {sum+=$3} END{print "Total Books"sum}' Books.txt
+  196  awk 'BEGIN{sum=0} {sum+=$3} END{print "Total Books"sum}' Books.txt
+  197  history
+
+    
+    
+
+
+1	Linux	2	234
+2	C		4	405
+3	C++		50	300
+4	java		20	400
+5	DS		100	300
+
+
+
+
+
+
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'BEGIN{total=0;} {itemno=$1;book=$2;bookamount=$3*$4;total=total+bookamount;print itemno," ","book","\t","$"bookamount;} END{print "Total amount "total;}' Books.txt
+1   book 	 $468
+2   book 	 $1620
+3   book 	 $15000
+4   book 	 $8000
+5   book 	 $30000
+Total amount 55088
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat Books.txt
+1	Linux	2	234
+2	C		4	405
+3	C++		50	300
+4	java		20	400
+5	DS		100	300
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ 
+
+
+    
+    
+    
+    
+    
+    
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat employees.txt 
+Thomsa	Manager	sales	40000
+Jason	Develper	IT		50000
+Sanjay	Sysadmin	IT		60000
+Nisha	Manager	IT		70000
+Randy	DBA		IT		40000
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'BEGIN {print "Name\tDesignation\tDepartment\tSalary"} {print $1,"\t",$2,"\t",$3,"\t",NF;} END{print "END"}'
+Name	Designation	Department	Salary
+^C
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'BEGIN {print "Name\tDesignation\tDepartment\tSalary"} {print $1,"\t",$2,"\t",$3,"\t",NF;} END{print "END"}' employees.txt
+Name	Designation	Department	Salary
+Thomsa 	 Manager 	 sales 	 4
+Jason 	 Develper 	 IT 	 4
+Sanjay 	 Sysadmin 	 IT 	 4
+Nisha 	 Manager 	 IT 	 4
+Randy 	 DBA 	 IT 	 4
+END
+
+
+
+
+awk 'BEGIN {for (i=1;i<=5;i++) print "Square of ",i,"is"i*i;}'
+
+ 1  cd ShellScripting/
+    2  sh function.sh 
+    3  bash function.sh 
+    4  sh function.sh 
+    5  bash function.sh 
+    6  cal
+    7  cal 1977 12
+    8  cal 1977-12
+    9  cal -d  1977-12
+   10  bash function.sh 
+   11  cal -d  1977-12
+   12  cal -d  -m 1977-12
+   13  cal -j -m 1977-12
+   14  cal -j -m 12
+   15  calender
+   16  calender -f
+   17  cal -j -m 12
+   18  calendar -f
+   19  calenda
+   20  calendar
+   21  calendar -f
+   22  calendar
+   23  calendar -f
+   24  calendar
+   25  calendarcal
+   26  cal
+   27  ncal
+   28  cal 2022
+   29  bash function.sh 
+   30  man date
+   31  bash Array.sh 
+   32  bash Array2.sh 
+   33  5
+   34  bash Array2.sh 
+   35  ls
+   36  car Array
+   37  car Array.sh
+   38  cat Array.sh
+   39  ls
+   40  cd ..
+   41  cd AWKDemos/
+   42  awk '/mumbai/' data.txt
+   43  awk '/10/' data.txt
+   44  awk '/record/' data.txt
+   45  cat records.txt 
+   46  aws '{print NR,$0}' records.txt
+   47  awk '{print NR,$0}' records.txt
+   48  awk '{print NR,$1}' records.txt
+   49  awk '{print NR,$1}' records.txt > newdata.txt
+   50  cat newdata.txt
+   51  awk '{print NR,$1,$2}' records.txt
+   52  awk '{print NR,$1,$2,$5}' records.txt
+   53  cat records.txt 
+   54  awk -F '/Kranti/{print $1}' records.txt
+   55  awk -F: '/Kranti/{print $1}' records.txt
+   56  cat records.txt
+   57  awk -F: '/Kranti/{print $1,$2}' records.txt
+   58  awk -F: '/Kranti/{print}' records.txt
+   59  awk -F: '/Kranti/{print $4}' records.txt
+   60  awk -F: '/Kranti/{print $3}' records.txt
+   61  awk -F: '/Kranti/{print $2}' records.txt
+   62  awk -F: '/Kranti/{print $1}' records.txt
+   63  awk -F '/Kranti/{print $1}' records.txt
+   64  awk -f '/Kranti/{print $1}' records.txt
+   65  awk -F  '/Kranti/{print $1}' records.txt
+   66  awk -F: '/Kranti/{print $1}' records.txt
+   67  awk 'length($1)>5' {print $1}' records.txt
+   68  awk 'length($1)>5 {print $1}' records.txt
+   69  cat records.txt
+   70  awk 'length($1)>5' records.txt
+   71  awk 'length($1)==5' records.txt
+   72  awk 'length($1)==5||length($2)==5' records.txt
+   73  awk 'length($1)==5||length($2)==7' records.txt
+   74  awk 'length($1)>=5 {print $1,"has",length($1)."chars"' records.txt
+   75  awk 'length($1)>=5 {print $1,"has",length($1),"chars"' records.txt
+   76  awk 'length($1)>=5 {print $1,"has",length($1),"chars"}' records.txt
+   77  cat records.txt
+   78  awk 'length($5)>50000' records.txt
+   79  awk 'length($5)>5000' records.txt
+   80  awk 'length($4)>5000' records.txt
+   81  awk 'length($6)>5000' records.txt
+   82  awk '{print $5
+   83  awk '{print $5}' records.txt
+   84  awk '{print $5>50000}' records.txt
+   85  awk '$5>50000 {print $5}' records.txt
+   86  awk '$5>50000 {print $5 $1}' records.txt
+   87  awk '$5>50000 {print $5,$1}' records.txt
+   88  cat records.txt
+   89  awk '{print $NF}' records.txt
+   90  awk '{print $NR}' records.txt
+   91  awk 'NR==3,NR==6 {print NR,$0}' records.txt
+   92  awk 'NR % 6' records.txt
+   93  cat records.txt
+   94  awk 'NR % 2' records.txt
+   95  awk 'NR > 2' records.txt
+   96  awk '$3==2012' records.txt
+   97  awk '$3~=2012' records.txt
+   98  awk '$3~2012' records.txt
+   99  awk '$3>=2012' records.txt
+  100  awk '/Singh/' records.tzt
+  101  awk '/Singh/' records.txt
+  102  awk '/Singh/&&/2015/' records.txt
+  103  awk '/Singh/&&/2013/' records.txt
+  104  awk '/Singh/||/2013/' records.txt
+  105  awk '/Singh/||/2000/' records.txt
+  106  awk '/Singh/,/2000/' records.txt
+  107  awk '/Singh/,/4044/' records.txt
+  108  awk '/4044/,/Singh/,/4044/' records.txt
+  109  awk '/4044/,/Singh/' records.txt
+  110  awk '/singh/,/2000/' records.txt
+  111  awk '/Singh/,/2000/' records.txt
+  112  awk '/Singh/,/1000/' records.txt
+  113  awk 'BEGIN {print Hello}; '/Singh/,/1000/' records.txt
+  114  awk 'BEGIN {print Hello}' '/Singh/,/1000/' records.txt
+  115  awk 'BEGIN {print Hello}' records.txt
+  116  awk 'BEGIN {print "Hello"}' records.txt
+  117  awk 'BEGIN {print "BEGIN"}' '/Singh/,/1000/' records.txt
+  118  awk 'BEGIN {print "BEGIN"}' '{/Singh/,/1000/}' records.txt
+  119  awk 'BEGIN {print "BEGIN"}' '{print $1}' records.txt
+  120  awk 'BEGIN {print "BEGIN";}' '{print $1}' records.txt
+  121  awk 'BEGIN {print "BEGIN";}' '{print $1;}' records.txt
+  122  awk 'BEGIN {print "BEGIN";} '{print $1;}' END{print "END"}' records.txt
+  123  awk 'BEGIN {print "BEGIN"} '{print $1;}' END{print "END"}' records.txt
+  124  awk 'BEGIN {print "BEGIN"} '{print $1}' END{print "END"}' records.txt
+  125  awk 'BEGIN {print "BEGIN";} '{print $1;}' END{print "END";}' records.txt
+  126  awk 'BEGIN {print "BEGIN";} {print $1;} END{print "END";}' records.txt
+  127  awk 'BEGIN {print "BEGIN";} {print NR;} END{print "END";}' records.txt
+  128  awk 'BEGIN {print "BEGIN";} {print NF;} END{print "END";}' records.txt
+  129  awk 'BEGIN {print "BEGIN";} {print $1;} END{print "END";}' records.txt
+  130  awk 'BEGIN {print ARGC,ARGV[1]}'
+  131  awk 'BEGIN {print ARGC,ARGV[1]}'  records.txt
+  132  awk 'BEGIN {print "FirstName\tLastName"} {print $1\t$2} END{print "***** DONE *****" }'  records.txt
+  133  awk 'BEGIN {print "FirstName\tLastName"} {print $1,"\t",$2} END{print "***** DONE *****" }'  records.txt
+  134  awk 'BEGIN {print "FirstName\tLastName"} {print $1,"\t\t",$2} END{print "***** DONE *****" }'  records.txt
+  135  awk 'BEGIN {print "FirstName\tLastName"} {print $1,"\t\t",$2} END{print "\n***** DONE *****" }'  records.txt
+  136  awk 'BEGIN {print "FirstName\tLastName"} {print $1,"\t\t",$2} END{print "\n********** DONE *********" }'  records.txt
+  137  awk 'BEGIN {print "**********************************\nFirstName\tLastName"} {print $1,"\t\t",$2} END{print "\n********** DONE *********" }'  records.txt
+  138  awk 'BEGIN {for (i=1;i<=5;i++) print "Square of ",i,"is"i*i;)'
+  139  awk 'BEGIN {for (i=1;i<=5;i++) print "Square of ",i,"is"i*i;)}'
+  140  awk 'BEGIN {for (i=1;i<=5;i++) print "Square of ",i,"is"i*i;}'
+  141  awk 'BEGIN {for (i=1;i<=5;i++) print "Square of ",i,"is "i*i;}'
+  142  awk '{for (i=1;i<=5;i++) print "Square of ",i,"is "i*i;}'
+  143  awk 'for (i=1;i<=5;i++) print "Square of ",i,"is "i*i;'
+  144  awk 'BEGIN {for (i=1;i<=5;i++) print "Square of ",i,"is"i*i;}'
+  145  awk '{for (i=1;i<=5;i++) print "Square of "}'
+  146  history
+
+
+
+
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '$5>50000 {print $5,$1}' records.txt
+56767 Anish
+56356 paresh
+50605 Vinay
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat records.txt
+Anish Patil	4044	12/2/2000	56767
+paresh Mishra	5050	33/2/2000	56356
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print $NF}' records.txt
+56767
+56356
+46774
+50605
+40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print $NR}' records.txt
+Anish
+Mishra
+2012
+12/2/2000
+40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'NR==3,NR==6 {print NR,$0}' records.txt
+3 Anand Mathur	2012	23/2/2000	46774
+4 Vinay Singh	2015	12/2/2000	50605
+5 Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ 
+
+    
+    
+    
+    
+    
+    
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '$5>50000 {print $5,$1}' records.txt
+56767 Anish
+56356 paresh
+50605 Vinay
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat records.txt
+Anish Patil	4044	12/2/2000	56767
+paresh Mishra	5050	33/2/2000	56356
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print $NF}' records.txt
+56767
+56356
+46774
+50605
+40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print $NR}' records.txt
+Anish
+Mishra
+2012
+12/2/2000
+40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'NR==3,NR==6 {print NR,$0}' records.txt
+3 Anand Mathur	2012	23/2/2000	46774
+4 Vinay Singh	2015	12/2/2000	50605
+5 Kranti Bhujbal	1010	12/2/2000	
+
+
+
+
+
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print $1}' records.txt
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat records.txt
+Anish Patil	4044	12/2/2000	56767
+paresh Mishra	5050	33/2/2000	56356
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print $1,$2}' records.txt
+Kranti Bhujbal	1010	12/2/2000	40404 
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print}' records.txt
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print $4}' records.txt
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print $3}' records.txt
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print $2}' records.txt
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print $1}' records.txt
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F '/Kranti/{print $1}' records.txt
+awk: 1: unexpected character '.'
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -f '/Kranti/{print $1}' records.txt
+awk: cannot open /Kranti/{print $1} (No such file or directory)
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F  '/Kranti/{print $1}' records.txt
+awk: 1: unexpected character '.'
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ 
+
+
+
+
+
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk -F: '/Kranti/{print $1}' records.txt
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)>5' {print $1}' records.txt
+> ^C
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)>5 {print $1}' records.txt
+paresh
+Kranti
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat records.txt
+Anish Patil	4044	12/2/2000	56767
+paresh Mishra	5050	33/2/2000	56356
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)>5' records.txt
+paresh Mishra	5050	33/2/2000	56356
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)==5' records.txt
+Anish Patil	4044	12/2/2000	56767
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)==5||length($2)==5' records.txt
+Anish Patil	4044	12/2/2000	56767
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)==5||length($2)==7' records.txt
+Anish Patil	4044	12/2/2000	56767
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)>=5 {print $1,"has",length($1)."chars"' records.txt
+awk: 1: unexpected character '.'
+awk: line 1: runaway string constant " ...
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)>=5 {print $1,"has",length($1),"chars"' records.txt
+awk: line 2: missing } near end of file
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk 'length($1)>=5 {print $1,"has",length($1),"chars"}' records.txt
+Anish has 5 chars
+paresh has 6 chars
+Anand has 5 chars
+Vinay has 5 chars
+Kranti has 6 chars
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat records.txt
+Anish Patil	4044	12/2/2000	56767
+paresh Mishra	5050	33/2/2000	56356
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+Kranti Bhujbal	1010	12/2/2000	40404
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print $5}' records.txt
+56767
+56356
+46774
+50605
+40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print $5>50000}' records.txt
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '$5>50000 {print $5}' records.txt
+56767
+56356
+50605
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '$5>50000 {print $5 $1}' records.txt
+56767Anish
+56356paresh
+50605Vinay
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '$5>50000 {print $5,$1}' records.txt
+56767 Anish
+56356 paresh
+50605 Vinay
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ 
+
+
+    
+    
+
+
+
+SYSTEM VARIABLES FOR AWK
+
+
+NR : - Number of currecct record
+FS : - Field Separator (defailt whitespace)
+RS : - Record separator default is \n
+NF :-  Number of Field in currecnt record
+OFS :- Output Field separator (defalt is space)
+ORS :- Output record separator (default is \n)
+    
+
+
+
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat records.txt 
+Anish Patil	4044	12/2/2000	56767
+paresh Mishra	5050	33/2/2000	56356
+Anand Mathur	2012	23/2/2000	46774
+Vinay Singh	2015	12/2/2000	50605
+Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ aws '{print NR,$0}' records.txt
+
+Command 'aws' not found, but can be installed with:
+
+sudo apt install awscli
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print NR,$0}' records.txt
+1 Anish Patil	4044	12/2/2000	56767
+2 paresh Mishra	5050	33/2/2000	56356
+3 Anand Mathur	2012	23/2/2000	46774
+4 Vinay Singh	2015	12/2/2000	50605
+5 Kranti Bhujbal	1010	12/2/2000	40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print NR,$1}' records.txt
+1 Anish
+2 paresh
+3 Anand
+4 Vinay
+5 Kranti
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print NR,$1}' records.txt > newdata.txt
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ cat newdata.txt
+1 Anish
+2 paresh
+3 Anand
+4 Vinay
+5 Kranti
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print NR,$1,$2}' records.txt
+1 Anish Patil
+2 paresh Mishra
+3 Anand Mathur
+4 Vinay Singh
+5 Kranti Bhujbal
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '{print NR,$1,$2,$5}' records.txt
+1 Anish Patil 56767
+2 paresh Mishra 56356
+3 Anand Mathur 46774
+4 Vinay Singh 50605
+5 Kranti Bhujbal 40404
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ 
+    
+    
+    
+
+
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '/mumbai/' data.txt
+avinash is going to mumbai
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '/10/' data.txt
+vishal is 10 year old
+shital@shital-VirtualBox:~/Desktop/AWKDemos$ awk '/record/' data.txt
+this is first line for the record 
+this is another line for new record
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,17 @@
+An example of the output produced by 'ls -l' is shown below. 
+
+drwx------ 2 richard staff  2048 Jan  2 1997  private
+drwxrws--- 2 richard staff  2048 Jan  2 1997  admin
+-rw-rw---- 2 richard staff 12040 Aug 20 1996  admin/userinfo
+drwxr-xr-x 3 richard user   2048 May 13 09:27 public
+
+Understanding how to read this output is useful to all unix users, but especially people using group access permissions. 
+Field 1:   a set of ten permission flags. 
+Field 2:   link count (don't worry about this)
+Field 3:   owner of the file
+Field 4:   associated group for the file
+Field 5:   size in bytes
+Field 6-8: date of last modification (format varies, but always 3 fields)
+Field 9:   name of file (possibly with path, depending on how ls was called)
+
+

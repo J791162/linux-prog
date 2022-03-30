@@ -1,0 +1,8 @@
+awk -f validate.awk cars.dat
+
+awk -f cmd.awk emp.dat
+
+awk -f cmd.awk empinfo.txt
+
+awk -f header.awk cars.dat
+
